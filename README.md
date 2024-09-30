@@ -126,35 +126,45 @@ $ steam-launch rdr2
 
 If Steam is installed in a non-default way (e.g., via Flatpak), you may need to update the `steam` command used by `steam-launch`:
 ```bash
-$ steam-launch --cfg -steam {steam_command}
+$ steam-launch --cfg --steam-command {steam_command}
 ```
 Example:
 ```bash
-$ steam-launch --cfg -steam "flatpak run com.valvesoftware.Steam"
+$ steam-launch --cfg --steam-command "flatpak run com.valvesoftware.Steam"
 ```
 
 #### b. Changing the `steamapps` Directory
 
 For non-standard installations of Steam you may need to update the `steamapps` location before adding aliases by searching local files:
 ```bash
-$ steam-launch --cfg -path {steamapps_location}
+$ steam-launch --cfg --steamapps-path {steamapps_location}
 ```
 Example (for Flatpak):
 ```bash
-$ steam-launch --cfg -path ~/.var/app/com.valvesoftware.Steam/.steam/steam/steamapps
+$ steam-launch --cfg --steamapps-path ~/.var/app/com.valvesoftware.Steam/.steam/steam/steamapps
 ```
 
 #### c. Adding Steam Launch Arguments
 
 If you typically launch Steam with additional arguments, you can configure `steam-launch` to use them (or you can add arguments specific to `steam-launch`):
 ```bash
-$ steam-launch --cfg -args "{your_args}"
+$ steam-launch --cfg --steam-args "{your_args}"
 ```
 Example:
 ```bash
-$ steam-launch --cfg -args "-forcedesktopscaling=1.5 -silent"
+$ steam-launch --cfg --steam-args "-forcedesktopscaling=1.5 -silent"
 ```
 
+#### d. Changing how Steam is run
+
+If when you launch a game with `steam-launch` Steam is not running, it will first start Steam and then launch the game. By default `steam-launch` will start Steam in the background, discarding its console output. If you want to see its output you can do:
+```bash
+$ steam-launch --cfg --background false
+```
+To return it back to the default state:
+```bash
+$ steam-launch --cfg --background true
+```
 ## License
 
 This project is licensed under the MIT License.
