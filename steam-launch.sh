@@ -16,6 +16,7 @@ create_cfg_dir() {
     echo -e "steam_command=steam" >> $CFG_FILE
     echo -e "steamapps_path=~/.steam/steam/steamapps" >> $CFG_FILE
     echo -e "steam_args=\"\"" >> $CFG_FILE
+    echo -e "redirect=\">/dev/null 2>&1 &\"" >> $CFG_FILE
     echo "Done"
 }
 
@@ -49,7 +50,7 @@ launch_app() {
         exit 1
     fi
     echo "Launching $1"
-    $steam_command $steam_args steam://rungameid/$app_id
+    eval "$steam_command $steam_args steam://rungameid/$app_id $redirect"
 }
 
 invalid_arguments() {
@@ -167,6 +168,20 @@ list_aliases() {
     jq -r 'to_entries | .[] | "\(.key): \(.value)"' $ALIAS_FILE
 }
 
+set_background_mode() {
+    case $1 in
+        "true")
+            sed -i 's/^redirect=.*/redirect=">\/dev\/null 2>\&1 \&"/' "$CFG_FILE"
+            ;;
+        "false")
+            sed -i 's/^redirect=.*/redirect=""/' "$CFG_FILE"
+            ;;
+        *)
+            invalid_arguments
+            ;;
+    esac
+}
+
 update_cfg() {
     case "$2" in
         "-steam")
@@ -177,6 +192,9 @@ update_cfg() {
             ;;
         "-args")
             sed -i "s|^steam_args=.*|steam_args=\"$3\"|" "$CFG_FILE"
+            ;;
+        "-bg")
+            set_background_mode $3
             ;;
         *)
             invalid_arguments
