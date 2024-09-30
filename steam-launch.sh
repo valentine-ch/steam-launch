@@ -184,16 +184,16 @@ set_background_mode() {
 
 update_cfg() {
     case "$2" in
-        "-steam")
+        "--steam-command")
             sed -i "s|^steam_command=.*|steam_command=\"$3\"|" "$CFG_FILE"
             ;;
-        "-path")
+        "--steamapps-path")
             sed -i "s|^steamapps_path=.*|steamapps_path=\"$3\"|" "$CFG_FILE"
             ;;
-        "-args")
+        "--steam-args")
             sed -i "s|^steam_args=.*|steam_args=\"$3\"|" "$CFG_FILE"
             ;;
-        "-bg")
+        "--background")
             set_background_mode $3
             ;;
         *)
