@@ -144,7 +144,24 @@ Example (for Flatpak):
 $ steam-launch --cfg --steamapps-path ~/.var/app/com.valvesoftware.Steam/.steam/steam/steamapps
 ```
 
-#### c. Adding Steam Launch Arguments
+#### c. Using `xdg-open`
+
+In some cases for non-standard Steam installations running
+```bash
+$ {steam_command} steam://rungameid/{appid}
+```
+may work correctly only when Steam is not running.
+To fix this `steam-launch` can use `xdg-open` instead when Steam is running. To enable this run:
+```bash
+$ steam-launch --cfg --xdg-open true
+```
+To disable run:
+```bash
+$ steam-launch --cfg --xdg-open true
+```
+**Note:** Make sure `xdg-open` correctly recognized `steam://` URLs.
+
+#### d. Adding Steam Launch Arguments
 
 If you typically launch Steam with additional arguments, you can configure `steam-launch` to use them (or you can add arguments specific to `steam-launch`):
 ```bash
@@ -154,8 +171,7 @@ Example:
 ```bash
 $ steam-launch --cfg --steam-args "-forcedesktopscaling=1.5 -silent"
 ```
-
-#### d. Changing how Steam is run
+#### e. Changing how Steam is run
 
 If when you launch a game with `steam-launch` Steam is not running, it will first start Steam and then launch the game. By default `steam-launch` will start Steam in the background, discarding its console output. If you want to see its output you can do:
 ```bash

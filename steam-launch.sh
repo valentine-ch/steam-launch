@@ -17,6 +17,7 @@ create_cfg_dir() {
     echo -e "steamapps_path=~/.steam/steam/steamapps" >> $CFG_FILE
     echo -e "steam_args=\"\"" >> $CFG_FILE
     echo -e "redirect=\">/dev/null 2>&1 &\"" >> $CFG_FILE
+    echo -e "use_xdg_open=false" >> $CFG_FILE
     echo "Done"
 }
 
@@ -50,7 +51,11 @@ launch_app() {
         exit 1
     fi
     echo "Launching $1"
-    eval "$steam_command $steam_args steam://rungameid/$app_id $redirect"
+    if [ "$use_xdg_open" = true ] && pgrep -x "steam" > /dev/null; then
+        eval "xdg-open steam://rungameid/$app_id $redirect"
+    else
+        eval "$steam_command $steam_args steam://rungameid/$app_id $redirect"
+    fi 
 }
 
 invalid_arguments() {
@@ -195,6 +200,12 @@ update_cfg() {
             ;;
         "--background")
             set_background_mode $3
+            ;;
+        "--xdg-open")
+            if [ "$3" != "true" ] && [ "$3" != "false" ]; then
+                invalid_arguments
+            fi
+            sed -i "s|^use_xdg_open=.*|use_xdg_open=$3|" "$CFG_FILE"
             ;;
         *)
             invalid_arguments
