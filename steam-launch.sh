@@ -5,7 +5,17 @@ ALIAS_FILE="$CFG_DIR/alias.json"
 CFG_FILE="$CFG_DIR/config.cfg"
 API_ENDPOINT="https://api.steampowered.com/ISteamApps/GetAppList/v2/"
 
+STEAM_COMMAND_DEFAULT="steam"
+STEAMAPPS_PATH_DEFAULT="~/.steam/steam/steamapps"
+USE_XDG_OPEN_DEFAULT="false"
+
 set -e
+
+use_flatpak_defaults() {
+    STEAM_COMMAND_DEFAULT="\"flatpak run com.valvesoftware.Steam\""
+    STEAMAPPS_PATH_DEFAULT="~/.var/app/com.valvesoftware.Steam/.steam/steam/steamapps"
+    USE_XDG_OPEN_DEFAULT="true"
+}
 
 create_cfg_dir() {
     echo "Initializing config directory at $CFG_DIR"
@@ -13,11 +23,11 @@ create_cfg_dir() {
     touch $ALIAS_FILE
     echo "{}" > $ALIAS_FILE
     touch $CFG_FILE
-    echo -e "steam_command=steam" >> $CFG_FILE
-    echo -e "steamapps_path=~/.steam/steam/steamapps" >> $CFG_FILE
+    echo -e "steam_command=$STEAM_COMMAND_DEFAULT" >> $CFG_FILE
+    echo -e "steamapps_path=$STEAMAPPS_PATH_DEFAULT" >> $CFG_FILE
     echo -e "steam_args=\"\"" >> $CFG_FILE
     echo -e "redirect=\">/dev/null 2>&1 &\"" >> $CFG_FILE
-    echo -e "use_xdg_open=false" >> $CFG_FILE
+    echo -e "use_xdg_open=$USE_XDG_OPEN_DEFAULT" >> $CFG_FILE
     echo "Done"
 }
 
@@ -215,6 +225,17 @@ update_cfg() {
     echo "Config updated successfully"
 }
 
+process_init_args() {
+    if [ "$#" -eq 1 ]; then
+        init_cfg
+    elif [ "$#" -eq 2 ] && [ "$2" == "flatpak" ]; then
+        use_flatpak_defaults
+        init_cfg
+    else
+        invalid_arguments
+    fi
+}
+
 validate_args_count() {
     if [ "$#" -ne $(($1 + 1)) ]; then
         invalid_arguments
@@ -227,8 +248,7 @@ fi
 
 case "$1" in
     "--init")
-        validate_args_count 1 "$@"
-        init_cfg
+        process_init_args "$@"
         ;;
     "--alias")
         init_cfg_if_ne

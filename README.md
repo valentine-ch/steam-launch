@@ -30,7 +30,10 @@ Run the following command to initialize the config directory:
 $ steam-launch --init
 ```
 This will create a directory at `~/.config/steam-launch/` and initialize necessary config files there. You only need to run this if you want to manually edit the config before using the tool.
-
+if Steam is installed via Flatpak it is recommended to run:
+```bash
+$ steam-launch --init flatpak
+```
 ### 3. Adding Aliases
 
 There are several ways to add game aliases:
