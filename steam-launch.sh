@@ -228,7 +228,7 @@ update_cfg() {
 process_init_args() {
     if [ "$#" -eq 1 ]; then
         init_cfg
-    elif [ "$#" -eq 2 ] && [ "$2" == "flatpak" ]; then
+    elif [ "$#" -eq 2 ] && [ "$2" == "--flatpak" ]; then
         use_flatpak_defaults
         init_cfg
     else
