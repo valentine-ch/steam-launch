@@ -29,11 +29,13 @@ Run the following command to initialize the config directory:
 ```bash
 $ steam-launch --init
 ```
-This will create a directory at `~/.config/steam-launch/` and initialize necessary config files there. You only need to run this if you want to manually edit the config before using the tool.
-if Steam is installed via Flatpak it is recommended to run:
+This will create a config directory at `~/.config/steam-launch/` and initialize necessary files there.
+If you're using Flatpak version of Steam use `--flatpak` option:
 ```bash
 $ steam-launch --init --flatpak
 ```
+You can skip this step unless you're going to use `--flatpak` option or you want to manually edit the config before using the tool. If config directory doesn't exist it will be initialize automatically when you create an alias or change settings.
+
 ### 3. Adding Aliases
 
 There are several ways to add game aliases:
@@ -65,7 +67,7 @@ $ steam-launch --alias -l Portal
 ```
 **Note 1:** This works only for installed games or games that have residual files in the `steamapps` directory.
 **Note 2:** Game name must be exact match (case sensitive).
-**Note 3:** For non-standard Steam installations you may need to update `steam-launch` config first.
+**Note 3:** For some non-standard Steam installations you may need to update `steam-launch` settings first.
 #### c. Using the Steam Web API
 Alternatively, you can search for the game appid using the Steam Web API:
 ```bash
@@ -95,7 +97,8 @@ Example:
     "Portal": 400
 }
 ```
-### 4. Updating or Removing Aliases
+
+### 4. Managing Aliases
 
 - To update an alias, simply create a new alias with the same name, and it will overwrite the existing one.
 - To remove an alias:
@@ -114,7 +117,7 @@ You can have multiple aliases for the same game.
 
 ### 5. Launching Games
 
-To launch a game, simply use the alias:
+To launch a game, simply use the alias as a single parameter:
 ```bash
 $ steam-launch {alias}
 ```
@@ -127,7 +130,7 @@ $ steam-launch rdr2
 
 #### a. Changing the Steam Command
 
-If Steam is installed in a non-default way (e.g., via Flatpak), you may need to update the `steam` command used by `steam-launch`:
+If Steam is installed in a non-default way (e.g., via Flatpak or Snap), you may need to update the `steam` command used by `steam-launch`:
 ```bash
 $ steam-launch --cfg --steam-command {steam_command}
 ```
