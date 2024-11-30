@@ -34,6 +34,10 @@ If you're using Flatpak version of Steam use `--flatpak` option:
 ```bash
 $ steam-launch --init --flatpak
 ```
+If you're using Snap version of Steam use `--snap` option:
+```bash
+$ steam-launch --init --snap
+```
 You can skip this step unless you're going to use `--flatpak` option or you want to manually edit the config before using the tool. If config directory doesn't exist it will be initialize automatically when you create an alias or change settings.
 
 ### 3. Adding Aliases

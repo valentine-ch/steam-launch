@@ -17,6 +17,10 @@ use_flatpak_defaults() {
     USE_XDG_OPEN_DEFAULT="true"
 }
 
+use_snap_defaults() {
+    STEAMAPPS_PATH_DEFAULT="~/snap/steam/common/.steam/steam/steamapps"
+}
+
 create_cfg_dir() {
     echo "Initializing config directory at $CFG_DIR"
     mkdir -p "$CFG_DIR"
@@ -230,6 +234,9 @@ process_init_args() {
         init_cfg
     elif [ "$#" -eq 2 ] && [ "$2" == "--flatpak" ]; then
         use_flatpak_defaults
+        init_cfg
+    elif [ "$#" -eq 2 ] && [ "$2" == "--snap" ]; then
+        use_snap_defaults
         init_cfg
     else
         invalid_arguments
