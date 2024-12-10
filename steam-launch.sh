@@ -14,7 +14,6 @@ set -e
 use_flatpak_defaults() {
     STEAM_COMMAND_DEFAULT="\"flatpak run com.valvesoftware.Steam\""
     STEAMAPPS_PATH_DEFAULT="~/.var/app/com.valvesoftware.Steam/.steam/steam/steamapps"
-    USE_XDG_OPEN_DEFAULT="true"
 }
 
 use_snap_defaults() {
