@@ -43,6 +43,12 @@ init_cfg() {
     fi
 }
 
+reset_cfg() {
+    echo "Removing $CFG_DIR"
+    rm -rf $CFG_DIR
+    init_cfg
+}
+
 init_cfg_if_ne() {
     if [ ! -d "$CFG_DIR" ]; then
         create_cfg_dir
@@ -231,16 +237,26 @@ update_cfg() {
     echo "Config updated successfully"
 }
 
+reconfigure() {
+    sed -i "s|^steam_command=.*|steam_command=\"$STEAM_COMMAND_DEFAULT\"|" "$CFG_FILE"
+    sed -i "s|^steamapps_path=.*|steamapps_path=\"$STEAMAPPS_PATH_DEFAULT\"|" "$CFG_FILE"
+    echo "Config updated successfully"
+}
+
 process_init_args() {
-    if [ "$#" -eq 1 ]; then
-        init_cfg
-    elif [ "$#" -eq 2 ] && [ "$2" == "--flatpak" ]; then
-        use_flatpak_defaults
-        init_cfg
-    elif [ "$#" -eq 2 ] && [ "$2" == "--snap" ]; then
-        use_snap_defaults
-        init_cfg
-    else
+    if [ "$#" -eq 2 ]; then
+        case $2 in
+            "--flatpak")
+                use_flatpak_defaults
+                ;;
+            "--snap")
+                use_snap_defaults
+                ;;
+            *)
+                invalid_arguments
+                ;;
+        esac
+    elif [ $# -gt 2 ]; then
         invalid_arguments
     fi
 }
@@ -258,6 +274,7 @@ fi
 case "$1" in
     "--init")
         process_init_args "$@"
+        init_cfg
         ;;
     "--alias")
         init_cfg_if_ne
@@ -277,6 +294,14 @@ case "$1" in
         validate_args_count 3 "$@"
         init_cfg_if_ne
         update_cfg "$@"
+        ;;
+    "--reset")
+        process_init_args "$@"
+        reset_cfg
+        ;;
+    "--reconf")
+        process_init_args "$@"
+        reconfigure
         ;;
     *)
         cfg_dir_exists
