@@ -211,6 +211,9 @@ update_cfg() {
         "--steam-args")
             sed -i "s|^steam_args=.*|steam_args=\"$3\"|" "$CFG_FILE"
             ;;
+        "--redirect")
+            sed -i "s|^redirect=.*|redirect=\"$3\"|" "$CFG_FILE"
+            ;;
         "--background")
             set_background_mode $3
             ;;
