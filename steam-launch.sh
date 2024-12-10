@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 CFG_DIR="$HOME/.config/steam-launch"
 ALIAS_FILE="$CFG_DIR/alias.json"
