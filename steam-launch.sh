@@ -240,6 +240,7 @@ update_cfg() {
 reconfigure() {
     sed -i "s|^steam_command=.*|steam_command=\"$STEAM_COMMAND_DEFAULT\"|" "$CFG_FILE"
     sed -i "s|^steamapps_path=.*|steamapps_path=\"$STEAMAPPS_PATH_DEFAULT\"|" "$CFG_FILE"
+    sed -i "s|^use_xdg_open=.*|use_xdg_open=$USE_XDG_OPEN_DEFAULT|" "$CFG_FILE"
     echo "Config updated successfully"
 }
 
