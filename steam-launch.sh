@@ -128,27 +128,37 @@ get_id_from_api() {
 get_id_from_local_files() {
     source "$CFG_FILE"
     eval steamapps_path="$steamapps_path"
-    app_id=$(find "$steamapps_path" -maxdepth 1 -type f -name '*.acf' \
-            -exec awk -v name="$1" -F '"' '
-        FNR==1 && NR!=1 {
-            if (game_name == name) {
-                print appid
-            }
-            appid=""; game_name=""
-        }
-        /"appid"/ { appid=$4 }
-        /"name"/ { game_name=$4 }
-        END {
-            if (game_name == name) {
-                print appid
-            }
-        }
-    ' {} +)
-    if [ -z "$app_id" ]; then
-        echo "Error: no match for $1 found" >&2
+    library_folders_file="$steamapps_path/libraryfolders.vdf"
+    if [ ! -f $library_folders_file ]; then
+        echo "Error: $library_folders_file doesn't exist" >&2
         return 1
     fi
-    echo $app_id
+    library_paths=$(grep '"path"' "$library_folders_file" |
+                    sed -E 's/.*"path"[[:space:]]+"([^"]+)".*/\1/')
+    while IFS= read -r library_path; do
+        app_id=$(find "$library_path/steamapps" -maxdepth 1 -type f -name '*.acf' \
+                -exec awk -v name="$1" -F '"' '
+            FNR==1 && NR!=1 {
+                if (game_name == name) {
+                    print appid
+                }
+                appid=""; game_name=""
+            }
+            /"appid"/ { appid=$4 }
+            /"name"/ { game_name=$4 }
+            END {
+                if (game_name == name) {
+                    print appid
+                }
+            }
+        ' {} +)
+        if [ -n "$app_id" ]; then
+            echo $app_id
+            return 0
+        fi
+    done <<< "$library_paths"
+    echo "Error: no match for $1 found" >&2
+    return 1
 }
 
 get_optional_alias_name() {
