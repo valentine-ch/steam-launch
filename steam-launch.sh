@@ -23,9 +23,7 @@ use_snap_defaults() {
 create_cfg_dir() {
     echo "Initializing config directory at $CFG_DIR"
     mkdir -p "$CFG_DIR"
-    touch $ALIAS_FILE
     echo "{}" > $ALIAS_FILE
-    touch $CFG_FILE
     echo -e "steam_command=$STEAM_COMMAND_DEFAULT" >> $CFG_FILE
     echo -e "steamapps_path=$STEAMAPPS_PATH_DEFAULT" >> $CFG_FILE
     echo -e "steam_args=\"\"" >> $CFG_FILE
