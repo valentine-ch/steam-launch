@@ -313,6 +313,7 @@ case "$1" in
         reconfigure
         ;;
     *)
+        validate_args_count 1 "$@"
         cfg_dir_exists
         launch_app "$1"
         ;;
