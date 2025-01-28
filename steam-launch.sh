@@ -215,27 +215,28 @@ set_background_mode() {
 }
 
 update_cfg() {
+    escaped=$(printf "%s" "$3" | sed 's/[&/\]/\\&/g')
     case "$2" in
         "--steam-command")
-            sed -i "s|^steam_command=.*|steam_command=\"$3\"|" "$CFG_FILE"
+            sed -i "s|^steam_command=.*|steam_command=\"$escaped\"|" "$CFG_FILE"
             ;;
         "--steamapps-path")
-            sed -i "s|^steamapps_path=.*|steamapps_path=\"$3\"|" "$CFG_FILE"
+            sed -i "s|^steamapps_path=.*|steamapps_path=\"$escaped\"|" "$CFG_FILE"
             ;;
         "--steam-args")
-            sed -i "s|^steam_args=.*|steam_args=\"$3\"|" "$CFG_FILE"
+            sed -i "s|^steam_args=.*|steam_args=\"$escaped\"|" "$CFG_FILE"
             ;;
         "--redirect")
-            sed -i "s|^redirect=.*|redirect=\"$3\"|" "$CFG_FILE"
+            sed -i "s|^redirect=.*|redirect=\"$escaped\"|" "$CFG_FILE"
             ;;
         "--background")
-            set_background_mode $3
+            set_background_mode $escaped
             ;;
         "--xdg-open")
-            if [ "$3" != "true" ] && [ "$3" != "false" ]; then
+            if [ "$escaped" != "true" ] && [ "$escaped" != "false" ]; then
                 invalid_arguments
             fi
-            sed -i "s|^use_xdg_open=.*|use_xdg_open=$3|" "$CFG_FILE"
+            sed -i "s|^use_xdg_open=.*|use_xdg_open=$escaped|" "$CFG_FILE"
             ;;
         *)
             invalid_arguments
