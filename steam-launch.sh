@@ -9,7 +9,7 @@ STEAM_COMMAND_DEFAULT="steam"
 STEAMAPPS_PATH_DEFAULT="~/.steam/steam/steamapps"
 USE_XDG_OPEN_DEFAULT="false"
 
-set -e
+set -eu
 
 use_flatpak_defaults() {
     STEAM_COMMAND_DEFAULT="\"flatpak run com.valvesoftware.Steam\""
@@ -88,9 +88,11 @@ validate_id() {
 
 add_alias_to_json() {
     tmp=$(mktemp)
-    jq --arg key "$1" --arg value "$2" '.[$key] = ($value | tonumber)' \
-        "$ALIAS_FILE" > "$tmp" && mv "$tmp" "$ALIAS_FILE"
-    rm -f "$tmp"
+    if ! jq --arg k "$1" --arg v "$2" '.[$k] = ($v | tonumber)' "$ALIAS_FILE" > "$tmp"; then
+        rm -f "$tmp"
+        return 1
+    fi
+    mv "$tmp" "$ALIAS_FILE"
     echo "Alias created successfully"
 }
 
@@ -101,8 +103,11 @@ remove_alias_from_json() {
         exit 1
     fi
     tmp=$(mktemp)
-    jq "del(.\"$1\")" "$ALIAS_FILE" > "$tmp" && mv "$tmp" "$ALIAS_FILE"
-    rm -f "$tmp"
+    if ! jq "del(.\"$1\")" "$ALIAS_FILE" > "$tmp"; then
+        rm -f "$tmp"
+        return 1
+    fi
+    mv "$tmp" "$ALIAS_FILE"
     echo "Alias removed"
 }
 
