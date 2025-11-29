@@ -165,7 +165,7 @@ get_id_from_local_files() {
 }
 
 get_optional_alias_name() {
-    if [ -z "$2" ]; then
+    if [ -z "${2:-}" ]; then
         echo "$1"
     else
         echo "$2"
@@ -180,12 +180,12 @@ create_alias() {
     case "$2" in
         "-a")
             app_id=$(get_id_from_api "$3")
-            alias_name=$(get_optional_alias_name "$3" "$4")
+            alias_name=$(get_optional_alias_name "${@:3}")
             add_alias_to_json "$alias_name" $app_id
             ;;
         "-l")
             app_id=$(get_id_from_local_files "$3")
-            alias_name=$(get_optional_alias_name "$3" "$4")
+            alias_name=$(get_optional_alias_name "${@:3}")
             add_alias_to_json "$alias_name" $app_id
             ;;
         "-m")
