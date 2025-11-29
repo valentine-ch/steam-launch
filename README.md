@@ -270,16 +270,18 @@ The following table provides configurations (Linux distributions and Steam versi
 | Ubuntu              | Default                 | Steam website                            |
 | Ubuntu              | Default                 | Multiverse                               |
 | Debian              | Default                 | Steam website                            |
-| Debian              | Default                 | non-free                                 |
+| Debian              | Default                 | contrib                                  |
 | Fedora              | Default                 | RPMFusion                                |
 | openSUSE Tumbleweed | Default                 | Main Repository (NON-OSS)                |
 | Arch Linux          | Default                 | multilib                                 |
 | Void Linux          | Default                 | void-repo-nonfree                        |
+| Gentoo              | Default                 | steam-overlay                            |
 | NixOS               | Default                 | nixpkgs                                  |
-| Solus               | Default                 | Stable (shannon)                         |
+| Solus               | Default                 | Stable                                   |
 | Ubuntu              | Flatpak                 | Flathub                                  |
 | Debian              | Flatpak                 | Flathub                                  |
 | Fedora              | Flatpak                 | Flathub                                  |
+| Alpine Linux        | Flatpak                 | Flathub                                  |
 | Ubuntu              | Snap                    | Snap Store                               |
 
 ## License
