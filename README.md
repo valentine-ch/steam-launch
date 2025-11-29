@@ -153,7 +153,11 @@ $ steam-launch rdr2
 
 ### 6. Customizing Settings
 
-#### a. Changing the Steam Command
+#### a. Steam Installation Compatibility
+
+**Note:** This section is meant for Steam installations that are not compatible with default configs. For Flatpak or Snap installations it is recommended to initialize config directory for you installation type right away as described above.
+
+##### i. Changing the Steam Command
 
 For non-standard Steam installations you may need to update the `steam` command used internally by `steam-launch`:
 ```shell
@@ -164,7 +168,7 @@ Example:
 $ steam-launch --cfg --steam-command "flatpak run com.valvesoftware.Steam"
 ```
 
-#### b. Changing the `steamapps` Directory
+##### ii. Changing the `steamapps` Directory
 
 Another setting that may need to be adjusted for non-standard Steam installations before adding aliases by searching local files is the default `steamapps` location:
 ```shell
@@ -175,7 +179,7 @@ Example:
 $ steam-launch --cfg --steamapps-path ~/snap/steam/common/.steam/steam/steamapps
 ```
 
-#### c. Using `xdg-open`
+##### iii. Using `xdg-open`
 
 In some cases with non-standard Steam installations running
 ```shell
@@ -192,7 +196,7 @@ $ steam-launch --cfg --xdg-open false
 ```
 **Note:** Before using this options make sure `xdg-open` and `pgrep` are installed on your system and `steam://` URLs are correctly recognized by `xdg-open`.
 
-#### d. Adding Steam Launch Arguments
+#### b. Adding Steam Launch Arguments
 
 If you typically launch Steam with additional arguments, you can configure `steam-launch` to use them (or you can add arguments specific to `steam-launch`):
 ```shell
@@ -202,7 +206,7 @@ Example:
 ```shell
 $ steam-launch --cfg --steam-args "-forcedesktopscaling=1.5 -silent"
 ```
-#### e. Managing Steam Output
+#### c. Managing Steam Output
 
 If when you launch a game with `steam-launch` Steam is not running, it will first start Steam and then launch the game. By default `steam-launch` will start Steam in the background and discard its console output by appending `>/dev/null 2>&1 &` to the `steam` command. This behavior can be customized using:
 ```shell
@@ -229,7 +233,7 @@ Or for no redirect use:
 $ steam-launch --cfg --background false
 ```
 
-#### f. Reconfiguring for Different Steam Installation Type
+#### d. Reconfiguring for Different Steam Installation Type
 
 If you're moving from one Steam installation type to another, or you accidentally initialized config directory for wrong installation type you can easily update relevant setting while keeping all other settings and aliases.  
 For default Steam installation run:
@@ -245,7 +249,7 @@ For Snap installation run:
 $ steam-launch --reconf --snap
 ```
 
-#### g. Resetting Config Directory
+#### e. Resetting Config Directory
 
 You can also reset the config directory. It will erase your config directory and create a new one with default settings. All your aliases and settings will be lost.  
 For default Steam installation run:
