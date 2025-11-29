@@ -24,11 +24,11 @@ create_cfg_dir() {
     echo "Initializing config directory at $CFG_DIR"
     mkdir -p "$CFG_DIR"
     echo "{}" > $ALIAS_FILE
-    echo -e "steam_command=$STEAM_COMMAND_DEFAULT" >> $CFG_FILE
-    echo -e "steamapps_path=$STEAMAPPS_PATH_DEFAULT" >> $CFG_FILE
+    echo "steam_command=$STEAM_COMMAND_DEFAULT" >> $CFG_FILE
+    echo "steamapps_path=$STEAMAPPS_PATH_DEFAULT" >> $CFG_FILE
+    echo "use_xdg_open=$USE_XDG_OPEN_DEFAULT" >> $CFG_FILE
     echo -e "steam_args=\"\"" >> $CFG_FILE
     echo -e "redirect=\">/dev/null 2>&1 &\"" >> $CFG_FILE
-    echo -e "use_xdg_open=$USE_XDG_OPEN_DEFAULT" >> $CFG_FILE
     echo "Done"
 }
 
