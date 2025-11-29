@@ -21,14 +21,14 @@ This requires you to input the game’s appid each time, which is not very conve
 
 Before using `steam-launch` make sure you have the following installed on your Linux system:
 - Steam
-- GNU Core Utilities
-- Bash
-- grep
-- find
-- jq
-- curl
-- awk
-- sed
+- `coreutils`, `busybox` or alternatives
+- `bash`
+- `grep`
+- `find`
+- `jq`
+- `curl`
+- `awk`
+- `sed`
 
 ## Note on Steam versions
 
