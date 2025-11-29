@@ -36,7 +36,7 @@ There are multiple ways you can install Steam on Linux. The most common ones inc
 - Official `deb` file from Steam website (for Debian-based distributions)
 - Packages provided by first party of third party repositories for your distribution
 - Flatpak (from Flathub)
-- Snap
+- Snap  
 Flatpak and Snap versions are notable for their different behavior. To address this `steam-launch` has configs for default (native), Flatpak and Snap Steam installations that are easy to use. Native Steam installations almost always behave the same (in a way that is relevant to `steam-launch`). This, however, cannot be guaranteed for all installations. If you use a non-standard Steam installation you can still make `steam-launch` work with it by adjusting a few settings.
 
 ## Getting Started
@@ -51,7 +51,7 @@ Run the following command to initialize the config directory:
 ```shell
 $ steam-launch --init
 ```
-This will create a config directory at `~/.config/steam-launch/` and initialize necessary files there.
+This will create a config directory at `~/.config/steam-launch/` and initialize necessary files there.  
 If you're using Flatpak version of Steam use `--flatpak` option:
 ```shell
 $ steam-launch --init --flatpak
@@ -91,8 +91,8 @@ Example:
 ```shell
 $ steam-launch --alias -l Portal
 ```
-**Note 1:** This works only for installed games or games that have residual appmanifest files on your system.
-**Note 2:** Game name must be exact match (case sensitive).
+**Note 1:** This works only for installed games or games that have residual appmanifest files on your system.  
+**Note 2:** Game name must be exact match (case sensitive).  
 #### c. Using the Steam Web API
 Alternatively, you can search for the game appid using the Steam Web API:
 ```shell
@@ -110,9 +110,9 @@ Example:
 ```shell
 $ steam-launch --alias -a Portal
 ```
-**Note 1:** An Internet connection is required for this feature.
-**Note 2:** Game name must be exact match (case sensitive).
-**Note 3:** This may not work as expected in rare cases when multiple games on Steam share exactly the same name.
+**Note 1:** An Internet connection is required for this feature.  
+**Note 2:** Game name must be exact match (case sensitive).  
+**Note 3:** This may not work as expected in rare cases when multiple games on Steam share exactly the same name.  
 #### d. Editing the Alias File Directly
 You can edit the alias file (`~/.config/steam-launch/alias.json`) directly. Add a new entry to the file where key is alias name and value is game id.
 Example:
@@ -181,7 +181,7 @@ In some cases with non-standard Steam installations running
 ```shell
 $ <steam_command> steam://rungameid/<appid>
 ```
-may work correctly only when Steam is not running.
+may work correctly only when Steam is not running.  
 To fix this `steam-launch` can use `xdg-open` instead when Steam is running. To enable this run:
 ```shell
 $ steam-launch --cfg --xdg-open true
@@ -231,7 +231,7 @@ $ steam-launch --cfg --background false
 
 #### f. Reconfiguring for Different Steam Installation Type
 
-If you're moving from one Steam installation type to another, or you accidentally initialized config directory for wrong installation type you can easily update relevant setting while keeping all other settings and aliases.
+If you're moving from one Steam installation type to another, or you accidentally initialized config directory for wrong installation type you can easily update relevant setting while keeping all other settings and aliases.  
 For default Steam installation run:
 ```shell
 $ steam-launch --reconf
@@ -247,7 +247,7 @@ $ steam-launch --reconf --snap
 
 #### g. Resetting Config Directory
 
-You can also reset the config directory. It will erase your config directory and create a new one with default settings. All your aliases and settings will be lost.
+You can also reset the config directory. It will erase your config directory and create a new one with default settings. All your aliases and settings will be lost.  
 For default Steam installation run:
 ```shell
 $ steam-launch --reset
