@@ -265,6 +265,10 @@ For Snap installation run:
 $ steam-launch --reset --snap
 ```
 
+### 7. Using test config directory
+
+If you made changes to `steam-launch` and want to test them without affecting you config directory, you can set environment variable `STEAM_LAUNCH_TEST` to use separate config directory at `~/.config/steam-launch-test/` instead of `~/.config/steam-launch/`.
+
 ## Compatibility Table
 
 The following table provides configurations (Linux distributions and Steam versions) with which `steam-launch` is confirmed to fully compatible using default settings.

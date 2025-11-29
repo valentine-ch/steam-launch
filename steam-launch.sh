@@ -282,6 +282,12 @@ validate_args_count() {
     fi
 }
 
+if [ -n "${STEAM_LAUNCH_TEST+x}" ]; then
+    CFG_DIR="$HOME/.config/steam-launch-test"
+    ALIAS_FILE="$CFG_DIR/alias.json"
+    CFG_FILE="$CFG_DIR/config.cfg"
+fi
+
 if [ $# -eq 0 ]; then
     invalid_arguments
 fi
