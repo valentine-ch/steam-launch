@@ -62,7 +62,7 @@ cfg_dir_exists() {
 
 launch_app() {
     source "$CFG_FILE"
-    app_id=$(jq ".\"$1\"" "$ALIAS_FILE")
+    local app_id=$(jq ".\"$1\"" "$ALIAS_FILE")
     if [ "$app_id" = "null" ]; then
         echo "Error: alias not found" >&2
         exit 1
@@ -87,7 +87,7 @@ validate_id() {
 }
 
 add_alias_to_json() {
-    tmp=$(mktemp)
+    local tmp=$(mktemp)
     if ! jq --arg k "$1" --arg v "$2" '.[$k] = ($v | tonumber)' "$ALIAS_FILE" > "$tmp"; then
         rm -f "$tmp"
         return 1
@@ -97,12 +97,12 @@ add_alias_to_json() {
 }
 
 remove_alias_from_json() {
-    alias=$(jq ".\"$1\"" "$ALIAS_FILE")
+    local alias=$(jq ".\"$1\"" "$ALIAS_FILE")
     if [ "$alias" = "null" ]; then
         echo "Error: alias not found" >&2
         exit 1
     fi
-    tmp=$(mktemp)
+    local tmp=$(mktemp)
     if ! jq "del(.\"$1\")" "$ALIAS_FILE" > "$tmp"; then
         rm -f "$tmp"
         return 1
@@ -113,34 +113,34 @@ remove_alias_from_json() {
 
 get_id_from_api() {
     echo "Sending request to $API_ENDPOINT" > /dev/tty
-    response=$(curl -s "$API_ENDPOINT")
+    local response=$(curl -s "$API_ENDPOINT")
     if [ -z "$response" ]; then
         echo "Error: request failed" >&2
         return 1
     fi
     echo "Parsing response" > /dev/tty
-    game=$(echo "$response" | jq ".applist.apps[] | select(.name==\"$1\")")
+    local game=$(echo "$response" | jq ".applist.apps[] | select(.name==\"$1\")")
     if [ -z "$game" ]; then
         echo "Error: no match for $1 found" >&2
         return 1
     fi
-    appid=$(echo "$game" | jq '.appid')
+    local appid=$(echo "$game" | jq '.appid')
     echo "$appid"
 }
 
 get_id_from_local_files() {
     source "$CFG_FILE"
     eval steamapps_path="$steamapps_path"
-    library_folders_file="$steamapps_path/libraryfolders.vdf"
+    local library_folders_file="$steamapps_path/libraryfolders.vdf"
     if [ ! -f $library_folders_file ]; then
         echo "Error: $library_folders_file doesn't exist" >&2
         return 1
     fi
-    library_paths=$(grep '"path"' "$library_folders_file" |
-                    sed -E 's/.*"path"[[:space:]]+"([^"]+)".*/\1/')
+    local library_paths=$(grep '"path"' "$library_folders_file" |
+                          sed -E 's/.*"path"[[:space:]]+"([^"]+)".*/\1/')
     while IFS= read -r library_path; do
-        app_id=$(find "$library_path/steamapps" -maxdepth 1 -type f -name '*.acf' \
-                -exec awk -v name="$1" -F '"' '
+        local app_id=$(find "$library_path/steamapps" -maxdepth 1 -type f -name '*.acf' \
+                       -exec awk -v name="$1" -F '"' '
             FNR==1 && NR!=1 {
                 if (game_name == name) {
                     print appid
@@ -179,13 +179,13 @@ create_alias() {
 
     case "$2" in
         "-a")
-            app_id=$(get_id_from_api "$3")
-            alias_name=$(get_optional_alias_name "${@:3}")
+            local app_id=$(get_id_from_api "$3")
+            local alias_name=$(get_optional_alias_name "${@:3}")
             add_alias_to_json "$alias_name" $app_id
             ;;
         "-l")
-            app_id=$(get_id_from_local_files "$3")
-            alias_name=$(get_optional_alias_name "${@:3}")
+            local app_id=$(get_id_from_local_files "$3")
+            local alias_name=$(get_optional_alias_name "${@:3}")
             add_alias_to_json "$alias_name" $app_id
             ;;
         "-m")
@@ -220,7 +220,7 @@ set_background_mode() {
 }
 
 update_cfg() {
-    escaped=$(printf "%s" "$3" | sed 's/[&/\]/\\&/g')
+    local escaped=$(printf "%s" "$3" | sed 's/[&/\]/\\&/g')
     case "$2" in
         "--steam-command")
             sed -i "s|^steam_command=.*|steam_command=\"$escaped\"|" "$CFG_FILE"
