@@ -121,7 +121,7 @@ get_id_from_api() {
     if [ "${api_key+x}" = "" ]; then
         echo "Error: config needs to be updated with API key" >&2
         return 1
-    elif [ "$api_key" = null]; then
+    elif [ "$api_key" = null ]; then
         echo "Error: API key is not set" >&2
         return 1
     fi
