@@ -3,7 +3,7 @@
 CFG_DIR="$HOME/.config/steam-launch"
 ALIAS_FILE="$CFG_DIR/alias.json"
 CFG_FILE="$CFG_DIR/config.cfg"
-API_ENDPOINT="https://api.steampowered.com/ISteamApps/GetAppList/v2/"
+API_ENDPOINT="https://api.steampowered.com/IStoreService/GetAppList/v1/"
 
 STEAM_COMMAND_DEFAULT="steam"
 STEAMAPPS_PATH_DEFAULT="~/.steam/steam/steamapps"
@@ -29,6 +29,7 @@ create_cfg_dir() {
     echo "use_xdg_open=$USE_XDG_OPEN_DEFAULT" >> $CFG_FILE
     echo -e "steam_args=\"\"" >> $CFG_FILE
     echo -e "redirect=\">/dev/null 2>&1 &\"" >> $CFG_FILE
+    echo "api_key=null" >> $CFG_FILE
     echo "Done"
 }
 
@@ -112,20 +113,42 @@ remove_alias_from_json() {
 }
 
 get_id_from_api() {
-    echo "Sending request to $API_ENDPOINT" > /dev/tty
-    local response=$(curl -s "$API_ENDPOINT")
-    if [ -z "$response" ]; then
-        echo "Error: request failed" >&2
+    source "$CFG_FILE"
+    if [ "${api_key+x}" = "" ]; then
+        echo "Error: config needs to be updated with API key" >&2
+        return 1
+    elif [ "$api_key" = null]; then
+        echo "Error: API key is not set" >&2
         return 1
     fi
-    echo "Parsing response" > /dev/tty
-    local game=$(echo "$response" | jq ".applist.apps[] | select(.name==\"$1\")")
-    if [ -z "$game" ]; then
-        echo "Error: no match for $1 found" >&2
-        return 1
-    fi
-    local appid=$(echo "$game" | jq '.appid')
-    echo "$appid"
+    local last_appid=0
+    local more_to_come=true
+    local batch=1
+    local response body status_code game
+    while [ "$more_to_come" = true ]; do
+        echo "Loading batch #$batch from $API_ENDPOINT" > /dev/tty
+        response=$(curl -sS -w "\n%{http_code}" \
+            "$API_ENDPOINT?key=$api_key&include_software=true&last_appid=$last_appid&max_results=50000")
+        if [ "$response" = $'\n000' ]; then
+            echo "Error: request failed" >&2
+            return 1
+        fi
+        body=$(echo "$response" | sed '$d')
+        status_code=$(echo "$response" | tail -n1)
+        if [ "$status_code" -ne 200 ]; then
+            echo "Error: received status code $status_code" >&2
+        fi
+        game=$(echo "$body" | jq ".response.apps[] | select(.name==\"$1\")")
+        if [ -n "$game" ]; then
+            echo "$game" | jq '.appid'
+            return 0
+        fi
+        last_appid=$(echo "$body" | jq ".response.last_appid")
+        more_to_come=$(echo "$body" | jq ".response.have_more_results")
+        ((++batch))
+    done
+    echo "Error: no match for $1 found" >&2
+    return 1
 }
 
 get_id_from_local_files() {
@@ -220,6 +243,22 @@ set_background_mode() {
 }
 
 update_cfg() {
+    if [ "$#" -eq 2 ] && [ "$2" = "--api-key" ]; then
+        read -s -p "Enter your Steam Web API key: " api_key
+        echo
+        if [[ ! "$api_key" =~ ^[A-Za-z0-9]+$ ]]; then
+            echo "Invalid key" >&2
+            return 1
+        fi
+        if grep -q "api_key=" "$CFG_FILE"; then
+            sed -i "s|^api_key=.*|api_key=$api_key|" "$CFG_FILE"
+        else
+            echo "api_key=$api_key" >> "$CFG_FILE"
+        fi
+        echo "Key added successfully"
+        return 0
+    fi
+    validate_args_count 3 "$@"
     local escaped=$(printf "%s" "$3" | sed 's/[&/\]/\\&/g')
     case "$2" in
         "--steam-command")
@@ -247,7 +286,6 @@ update_cfg() {
             invalid_arguments
             ;;
     esac
-
     echo "Config updated successfully"
 }
 
@@ -312,7 +350,6 @@ case "$1" in
         list_aliases
         ;;
     "--cfg")
-        validate_args_count 3 "$@"
         init_cfg_if_ne
         update_cfg "$@"
         ;;

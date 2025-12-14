@@ -110,7 +110,7 @@ Example:
 ```shell
 $ steam-launch --alias -a Portal
 ```
-**Note 1:** An Internet connection is required for this feature.  
+**Note 1:** After changes to Steam Web API this feature now requires API key. Instructions on adding one are provided below. It is recommended to use `--alias -l` unless you don't have game currently installed.  
 **Note 2:** Game name must be exact match (case sensitive).  
 **Note 3:** This may not work as expected in rare cases when multiple games on Steam share exactly the same name.  
 #### d. Editing the Alias File Directly
@@ -265,7 +265,17 @@ For Snap installation run:
 $ steam-launch --reset --snap
 ```
 
-### 7. Using test config directory
+#### f. Adding API key
+
+After changes to Steam Web API `--alias -a` now requires an API key. If you want to keep using this feature you need to add your API key to the config.  
+To add your key to the config run:
+```shell
+$ steam-launch --cfg --api-key
+```
+You will be prompted to entrer your key.  
+**Note:** API key will be stored in `~/.config/steam-launch/config.cfg` in plaintext. Do what you want with this information.
+
+### 7. Using Test Config Directory
 
 If you made changes to `steam-launch` and want to test them without affecting you config directory, you can set environment variable `STEAM_LAUNCH_TEST` to use separate config directory at `~/.config/steam-launch-test/` instead of `~/.config/steam-launch/`.
 
