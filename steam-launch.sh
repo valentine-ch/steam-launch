@@ -63,7 +63,8 @@ cfg_dir_exists() {
 
 launch_app() {
     source "$CFG_FILE"
-    local app_id=$(jq ".\"$1\"" "$ALIAS_FILE")
+    local app_id
+    app_id=$(jq ".\"$1\"" "$ALIAS_FILE")
     if [ "$app_id" = "null" ]; then
         echo "Error: alias not found" >&2
         exit 1
@@ -88,7 +89,8 @@ validate_id() {
 }
 
 add_alias_to_json() {
-    local tmp=$(mktemp)
+    local tmp
+    tmp=$(mktemp)
     if ! jq --arg k "$1" --arg v "$2" '.[$k] = ($v | tonumber)' "$ALIAS_FILE" > "$tmp"; then
         rm -f "$tmp"
         return 1
@@ -98,12 +100,13 @@ add_alias_to_json() {
 }
 
 remove_alias_from_json() {
-    local alias=$(jq ".\"$1\"" "$ALIAS_FILE")
+    local alias tmp
+    alias=$(jq ".\"$1\"" "$ALIAS_FILE")
     if [ "$alias" = "null" ]; then
         echo "Error: alias not found" >&2
         exit 1
     fi
-    local tmp=$(mktemp)
+    tmp=$(mktemp)
     if ! jq "del(.\"$1\")" "$ALIAS_FILE" > "$tmp"; then
         rm -f "$tmp"
         return 1
@@ -159,11 +162,12 @@ get_id_from_local_files() {
         echo "Error: $library_folders_file doesn't exist" >&2
         return 1
     fi
-    local library_paths=$(grep '"path"' "$library_folders_file" |
-                          sed -E 's/.*"path"[[:space:]]+"([^"]+)".*/\1/')
+    local library_paths app_id
+    library_paths=$(grep '"path"' "$library_folders_file" |
+                    sed -E 's/.*"path"[[:space:]]+"([^"]+)".*/\1/')
     while IFS= read -r library_path; do
-        local app_id=$(find "$library_path/steamapps" -maxdepth 1 -type f -name '*.acf' \
-                       -exec awk -v name="$1" -F '"' '
+        app_id=$(find "$library_path/steamapps" -maxdepth 1 -type f -name '*.acf' \
+                -exec awk -v name="$1" -F '"' '
             FNR==1 && NR!=1 {
                 if (game_name == name) {
                     print appid
@@ -199,16 +203,16 @@ create_alias() {
     if [ "$#" -ne 3 ] && [ "$#" -ne 4 ]; then
         invalid_arguments
     fi
-
+    local app_id alias_name
     case "$2" in
         "-a")
-            local app_id=$(get_id_from_api "$3")
-            local alias_name=$(get_optional_alias_name "${@:3}")
+            app_id=$(get_id_from_api "$3")
+            alias_name=$(get_optional_alias_name "${@:3}")
             add_alias_to_json "$alias_name" $app_id
             ;;
         "-l")
-            local app_id=$(get_id_from_local_files "$3")
-            local alias_name=$(get_optional_alias_name "${@:3}")
+            app_id=$(get_id_from_local_files "$3")
+            alias_name=$(get_optional_alias_name "${@:3}")
             add_alias_to_json "$alias_name" $app_id
             ;;
         "-m")
@@ -259,7 +263,8 @@ update_cfg() {
         return 0
     fi
     validate_args_count 3 "$@"
-    local escaped=$(printf "%s" "$3" | sed 's/[&/\]/\\&/g')
+    local escaped
+    escaped=$(printf "%s" "$3" | sed 's/[&/\]/\\&/g')
     case "$2" in
         "--steam-command")
             sed -i "s|^steam_command=.*|steam_command=\"$escaped\"|" "$CFG_FILE"
