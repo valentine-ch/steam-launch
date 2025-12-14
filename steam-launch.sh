@@ -9,6 +9,7 @@ STEAM_COMMAND_DEFAULT="steam"
 STEAMAPPS_PATH_DEFAULT="~/.steam/steam/steamapps"
 USE_XDG_OPEN_DEFAULT="false"
 
+shopt -s inherit_errexit
 set -eu
 
 use_flatpak_defaults() {
@@ -132,10 +133,6 @@ get_id_from_api() {
         echo "Loading batch #$batch from $API_ENDPOINT" > /dev/tty
         response=$(curl -sS -w "\n%{http_code}" \
             "$API_ENDPOINT?key=$api_key&include_software=true&last_appid=$last_appid&max_results=50000")
-        if [ "$response" = $'\n000' ]; then
-            echo "Error: request failed" >&2
-            return 1
-        fi
         body=$(echo "$response" | sed '$d')
         status_code=$(echo "$response" | tail -n1)
         if [ "$status_code" -ne 200 ]; then
